@@ -14,6 +14,7 @@
 import os
 import zipfile
 
+import pathlib
 import pretend
 import pytest
 
@@ -70,7 +71,7 @@ def test_read_valid(example_wheel):
 
 def test_read_non_existent_wheel_file_name():
     """Test reading a wheel file which doesn't exist"""
-    file_name = "/foo/bar/baz.whl"
+    file_name = str(pathlib.Path("/foo/bar/baz.whl"))
     with pytest.raises(
         exceptions.InvalidDistribution, match=f"No such file: {file_name}"
     ):
@@ -79,7 +80,7 @@ def test_read_non_existent_wheel_file_name():
 
 def test_read_invalid_wheel_extension():
     """Test reading a wheel file without a .whl extension"""
-    file_name = os.path.join(os.path.dirname(__file__), "fixtures/twine-1.5.0.tar.gz")
+    file_name = str(pathlib.Path(os.path.dirname(__file__)) / "fixtures" / "twine-1.5.0.tar.gz")
     with pytest.raises(
         exceptions.InvalidDistribution,
         match=f"Not a known archive format for file: {file_name}",
