@@ -72,7 +72,7 @@ def test_read_valid(example_wheel):
 
 def test_read_non_existent_wheel_file_name():
     """Test reading a wheel file which doesn't exist"""
-    file_name = str(pathlib.Path("/foo/bar/baz.whl"))
+    file_name = str(os.path.abspath(pathlib.Path("/foo/bar/baz.whl")))
     with pytest.raises(
         exceptions.InvalidDistribution, match=re.escape(f"No such file: {file_name}")
     ):
