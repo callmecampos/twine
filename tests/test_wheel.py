@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+import pathlib
+import re
 import zipfile
 
-import pathlib
 import pretend
 import pytest
 
@@ -73,17 +74,19 @@ def test_read_non_existent_wheel_file_name():
     """Test reading a wheel file which doesn't exist"""
     file_name = str(pathlib.Path("/foo/bar/baz.whl"))
     with pytest.raises(
-        exceptions.InvalidDistribution, match=f"No such file: {file_name}"
+        exceptions.InvalidDistribution, match=re.escape(f"No such file: {file_name}")
     ):
         wheel.Wheel(file_name)
 
 
 def test_read_invalid_wheel_extension():
     """Test reading a wheel file without a .whl extension"""
-    file_name = str(pathlib.Path(os.path.dirname(__file__)) / "fixtures" / "twine-1.5.0.tar.gz")
+    file_name = str(
+        pathlib.Path(os.path.dirname(__file__)) / "fixtures" / "twine-1.5.0.tar.gz"
+    )
     with pytest.raises(
         exceptions.InvalidDistribution,
-        match=f"Not a known archive format for file: {file_name}",
+        match=re.escape(f"Not a known archive format for file: {file_name}"),
     ):
         wheel.Wheel(file_name)
 
@@ -95,6 +98,7 @@ def test_read_wheel_empty_metadata(tmpdir):
         zip_file.writestr("METADATA", "")
 
     with pytest.raises(
-        exceptions.InvalidDistribution, match=f"No METADATA in archive: {whl_file}"
+        exceptions.InvalidDistribution,
+        match=re.escape(f"No METADATA in archive: {whl_file}"),
     ):
         wheel.Wheel(whl_file)
