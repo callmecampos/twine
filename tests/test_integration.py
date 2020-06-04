@@ -5,6 +5,10 @@ import pytest
 from twine import cli
 
 
+@pytest.mark.xfail(
+    sys.platform == "win32",
+    reason="pytest-services watcher_getter fixture does not support Windows",
+)
 def test_devpi_upload(devpi_server, uploadable_dist):
     command = [
         "upload",
@@ -28,10 +32,6 @@ twine_sampleproject_token = (
 )
 
 
-@pytest.mark.xfail(
-    sys.platform == "win32",
-    reason="pytest-services watcher_getter fixture does not support Windows",
-)
 def test_pypi_upload(sampleproject_dist):
     command = [
         "upload",
